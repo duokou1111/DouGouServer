@@ -11,6 +11,6 @@ public class TestDaoImpl implements TestDao {
     JdbcTemplate jdbcTemplate;
     @Override
     public String getTest() {
-        return jdbcTemplate.queryForMap("select * from test").toString();
+        return "???";
     }
 }
