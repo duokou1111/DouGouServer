@@ -1,23 +1,23 @@
 package com.springboot.wzh.service;
 
-import com.springboot.wzh.repository.dao.TestDao;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.springboot.wzh.model.UserInfo;
+import com.springboot.wzh.repository.dao.GlobalConfigDao;
+import com.springboot.wzh.repository.dao.UserInfoDao;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 @Service
 public class IndexService {
-    @Autowired
-    TestDao testDao;
+    @Resource
+    private UserInfoDao userInfoDao;
+    @Resource
+    private GlobalConfigDao globalConfigDao;
+    public UserInfo getUser(String username){
+        return userInfoDao.getUserInfoEntityByUserName(username);
+    }
+    public String getConfig(String name){
+        return  globalConfigDao.getVariable("Login_limit");
+    }
 
-    public String getTest(){
-       /*return testDao.getTest();*/
-        return getTest2();
-    }
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public String getTest2(){
-        return testDao.getTest();
-    }
 }

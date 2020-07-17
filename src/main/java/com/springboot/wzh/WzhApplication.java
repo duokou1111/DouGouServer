@@ -6,11 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.ProxyTransactionManagementConfiguration;
 
 @SpringBootApplication
+@MapperScan("com.springboot.wzh.repository.dao")
 @EnableCaching
-@MapperScan("com.springboot.wzh.repository.Mapper")
+@EnableWebSecurity
 public class WzhApplication {
 
     public static void main(String[] args) {

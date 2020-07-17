@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.springboot.wzh.repository.dao.UserInfoDao" >
+    <resultMap id="UserInfo" type="com.springboot.wzh.model.UserInfo" >
+        <id column="ID" property="id" jdbcType="INTEGER" />
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+        <result column="PASSWORD" property="password" jdbcType="VARCHAR" />
+        <result column="STATUS" property="status" jdbcType="INTEGER" />
+        <result column="ROLE" property="role" jdbcType="INTEGER" />
+    </resultMap>
+    <select id="getUserInfoEntityByUserName" resultMap="UserInfo" parameterType="java.lang.String" >
+        select
+        INFO.ID,INFO.USER_NAME,INFO.STATUS,INFO.ROLE,INFO.PASSWORD
+        from USER_INFO INFO
+        where INFO.USER_NAME = #{userName}
+    </select>
+</mapper>
