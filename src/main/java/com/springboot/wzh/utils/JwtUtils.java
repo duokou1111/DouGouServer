@@ -1,6 +1,6 @@
 package com.springboot.wzh.utils;
 
-import com.springboot.wzh.model.UserInfo;
+import com.springboot.wzh.domain.UserInfo;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -36,7 +36,7 @@ public class JwtUtils {
                 .claim("username", user.getUserName())
                 .claim("role",user.getRole())
                 .setIssuedAt(new Date())
-                .setIssuer("admin")
+                .setIssuer(ISSUER)
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRITION))
                 .signWith(SignatureAlgorithm.HS256, APPSECRET_KEY).compact();
         return token;

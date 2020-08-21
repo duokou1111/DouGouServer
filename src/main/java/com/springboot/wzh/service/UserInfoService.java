@@ -1,8 +1,7 @@
 package com.springboot.wzh.service;
 
-import com.springboot.wzh.model.UserInfo;
+import com.springboot.wzh.domain.UserInfo;
 import com.springboot.wzh.repository.dao.UserInfoDao;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
