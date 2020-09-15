@@ -2,6 +2,7 @@ package com.springboot.wzh.service;
 
 import com.springboot.wzh.domain.UserInfo;
 import com.springboot.wzh.repository.dao.UserInfoDao;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,9 @@ public class JwtUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserInfo userInfo = userInfoDao.getUserInfoEntityByUserName(username);
+        if (null == userInfo){
+            throw new BadCredentialsException("帐号不存在，请重新输入");
+        }
         com.springboot.wzh.model.UserDetails userDetails = new com.springboot.wzh.model.UserDetails();
         userDetails.setUsername(userInfo.getUserName());
         userDetails.setUserInfo(userInfo);
