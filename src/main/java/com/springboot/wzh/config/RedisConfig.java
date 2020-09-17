@@ -22,7 +22,7 @@ import java.util.Set;
 @Configuration
 public class RedisConfig {
 
-    @Bean("redisSentinelConfiguration")
+    /*@Bean("redisSentinelConfiguration")
     public RedisSentinelConfiguration getRedisSentinelConfiguration(
             @Value("${redis.sentinel.nodes}") String nodes,
             @Value("${redis.sentinel.master.name}") String masterName,
@@ -87,5 +87,5 @@ public class RedisConfig {
         StringRedisTemplate redisTemplate = new StringRedisTemplate();
         redisTemplate.setConnectionFactory(connectionFactory);
         return redisTemplate;
-    }
+    }*/
 }
