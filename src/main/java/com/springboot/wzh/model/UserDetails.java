@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
-    private String password;
+    private transient String password;
     private String username;
+    private String token;
     private UserInfo userInfo;
     private boolean isAccountNonExpired = true;
     private boolean isNonLocked = true;
@@ -19,6 +20,15 @@ public class UserDetails implements org.springframework.security.core.userdetail
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return auths;
     }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     public void addAuth(GrantedAuthority grantedAuthority){
         auths.add(grantedAuthority);
     }

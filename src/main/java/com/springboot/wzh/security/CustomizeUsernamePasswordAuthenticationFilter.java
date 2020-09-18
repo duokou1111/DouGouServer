@@ -1,5 +1,4 @@
-package com.springboot.wzh.filter;
-import com.alibaba.fastjson.JSON;
+package com.springboot.wzh.security;
 import com.alibaba.fastjson.JSONObject;
 import com.springboot.wzh.model.ActionResult;
 import com.springboot.wzh.model.UserDetails;
@@ -12,10 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,12 +20,12 @@ import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter {
+public class CustomizeUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Autowired
     private RedisTemplate redisTemplate;
     private static String REDIS_PREFIX = "TOKEN:";
-    public JwtAuthorizationFilter() {
+    public CustomizeUsernamePasswordAuthenticationFilter() {
         super.setFilterProcessesUrl("/user/login");
     }
 
@@ -50,10 +47,12 @@ public class JwtAuthorizationFilter extends UsernamePasswordAuthenticationFilter
         UserDetails userDetails = (UserDetails) authResult.getPrincipal();
         logger.info(userDetails.getUsername()+"登录成功");
         String token = JwtUtils.generateJsonWebToken(userDetails.getUserInfo());
+        userDetails.setToken(token);
         response.setHeader("token",token);
         response.setStatus(200);
-        long daySeconds = (long) (86400 + Math.random()*300);
-        redisTemplate.opsForValue().set(REDIS_PREFIX+userDetails.getUsername(),token,daySeconds, TimeUnit.SECONDS);
+        long expireTime = (long) (JwtUtils.EXPIRITION + Math.random()*300);
+        String jsonStr = JSONObject.toJSONString(userDetails);
+        redisTemplate.opsForValue().set(REDIS_PREFIX+userDetails.getUsername(),jsonStr,expireTime, TimeUnit.SECONDS);
     }
 
     @Override

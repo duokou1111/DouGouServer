@@ -1,9 +1,9 @@
 package com.springboot.wzh.config;
 
-import com.springboot.wzh.filter.JwtAuthenticationFilter;
-import com.springboot.wzh.filter.JwtAuthorizationFilter;
+import com.springboot.wzh.security.CustomizeUsernamePasswordAuthenticationFilter;
+import com.springboot.wzh.security.JwtAuthenticationFilter;
+import com.springboot.wzh.security.JwtProvider;
 import com.springboot.wzh.service.JwtUserDetailService;
-import com.springboot.wzh.utils.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -11,14 +11,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.thymeleaf.spring5.context.SpringContextUtils;
+
+import java.util.Collections;
 
 @SpringBootConfiguration
 @Configuration
@@ -28,13 +31,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Lazy
     AuthenticationManager authenticationManagerBean;
+    @Autowired
+    @Lazy
+    JwtProvider jwtProvider;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // http.csrf().disable()
         http.cors().configurationSource(CorsConfigurationSource());
         http.authorizeRequests().
                 antMatchers("/resources/static/**").permitAll().
-                and().formLogin().and().csrf().disable().addFilter(jwtAuthorizationFilter());
+                and().formLogin().and().csrf().disable().addFilterAt(jwtAuthenticationFilter(),CustomizeUsernamePasswordAuthenticationFilter.class);
     }
     private CorsConfigurationSource CorsConfigurationSource() {
         CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
@@ -55,15 +61,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authProvider;
     }
     @Bean
+    public JwtProvider jwtProvider(){
+        return new JwtProvider();
+    }
+    @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
     @Bean
     @DependsOn("authenticationManagerBean")
-    public JwtAuthorizationFilter jwtAuthorizationFilter() throws Exception {
-        JwtAuthorizationFilter jwtAuthorizationFilter = new JwtAuthorizationFilter();
+    public CustomizeUsernamePasswordAuthenticationFilter jwtAuthorizationFilter() throws Exception {
+        CustomizeUsernamePasswordAuthenticationFilter jwtAuthorizationFilter = new CustomizeUsernamePasswordAuthenticationFilter();
         jwtAuthorizationFilter.setAuthenticationManager(authenticationManagerBean);
         return jwtAuthorizationFilter;
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    @Bean("JwtAuthenticationFilter")
+    public JwtAuthenticationFilter jwtAuthenticationFilter(){
+        ProviderManager providerManager =
+                new ProviderManager(Collections.singletonList(jwtProvider));
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter();
+        jwtAuthenticationFilter.setAuthenticationManager(providerManager);
+        return jwtAuthenticationFilter;
     }
 }
