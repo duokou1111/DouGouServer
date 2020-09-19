@@ -17,6 +17,7 @@ public class ClassificationTagController {
     @GetMapping("/all")
     @ResponseBody
     public String getAllTags(){
+        System.out.println("get tags");
         return JSONObject.toJSONString(classificaionTagService.getAll());
     }
 }

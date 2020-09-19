@@ -2,6 +2,7 @@ package com.springboot.wzh.security;
 
 import com.alibaba.fastjson.JSONObject;
 import com.springboot.wzh.utils.JwtUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AccountExpiredException;
@@ -11,7 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.thymeleaf.util.StringUtils;
-
+@Slf4j
 public class JwtProvider extends AbstractUserDetailsAuthenticationProvider {
     @Autowired
     private RedisTemplate redisTemplate;
@@ -37,6 +38,7 @@ public class JwtProvider extends AbstractUserDetailsAuthenticationProvider {
         String redisUserInfo = (String) redisTemplate.opsForValue().get(REDIS_PREFIX+username);
         userDetails = JSONObject.parseObject(redisUserInfo,com.springboot.wzh.model.UserDetails.class);
         if (!requestToken.equals(userDetails.getToken())){
+            log.info("TOKEN不匹配");
             return null;
         }
         if(JwtUtils.isExpiration(requestToken)){
@@ -44,6 +46,7 @@ public class JwtProvider extends AbstractUserDetailsAuthenticationProvider {
             userDetails.setEnabled(false);
             return userDetails;
         }
+        userDetails.setEnabled(true);
         return userDetails;
 
     }
