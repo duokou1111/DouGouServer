@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "cover.path",
+      "type": "java.lang.String",
+      "description": "封面图片路径"
+  }
+] }

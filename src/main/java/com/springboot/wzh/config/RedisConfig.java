@@ -1,5 +1,6 @@
 package com.springboot.wzh.config;
 
+import com.springboot.wzh.bean.OnLiveReceiver;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +13,12 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.listener.PatternTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.Arrays;
@@ -21,7 +27,19 @@ import java.util.Set;
 
 @Configuration
 public class RedisConfig {
+    @Bean
+    RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
+                                            MessageListenerAdapter onLiveListener) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.addMessageListener(onLiveListener, new PatternTopic("CHANNEL_UP"));
+        return container;
+    }
 
+    @Bean(name = "onLiveListener")
+    MessageListenerAdapter OnLiveListener(OnLiveReceiver onLiveReceiver) {
+        return new MessageListenerAdapter(onLiveReceiver, "onLive");
+    }
     /*@Bean("redisSentinelConfiguration")
     public RedisSentinelConfiguration getRedisSentinelConfiguration(
             @Value("${redis.sentinel.nodes}") String nodes,

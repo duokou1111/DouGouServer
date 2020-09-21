@@ -1,6 +1,6 @@
 package com.springboot.wzh.repository.dao;
 
-import com.springboot.wzh.model.ClassificationTag;
+import com.springboot.wzh.domain.ClassificationTag;
 import org.apache.ibatis.annotations.Select;
 
 import javax.annotation.Resource;

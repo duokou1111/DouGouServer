@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
 
     public JwtAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/tag/**", "GET"));
+        super(new AntPathRequestMatcher("/tag/**,/stream/**"));
     }
 
     @Override
@@ -43,6 +43,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException{
         ActionResult actionResult = new ActionResult();
+        System.out.println("验证失败");
         String str = JSONObject.toJSONString(actionResult);
         response.setStatus(401);//未授权
         response.setContentType("application/json;charset=utf-8");

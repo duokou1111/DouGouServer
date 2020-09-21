@@ -1,4 +1,4 @@
-package com.springboot.wzh.model;
+package com.springboot.wzh.domain;
 
 public class ClassificationTag {
     private int id;

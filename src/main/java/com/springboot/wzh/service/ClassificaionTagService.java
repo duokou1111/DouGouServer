@@ -1,6 +1,6 @@
 package com.springboot.wzh.service;
 
-import com.springboot.wzh.model.ClassificationTag;
+import com.springboot.wzh.domain.ClassificationTag;
 import com.springboot.wzh.repository.dao.ClassificationTagDao;
 import org.springframework.stereotype.Service;
 
