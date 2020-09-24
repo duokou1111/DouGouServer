@@ -37,7 +37,7 @@ public class JwtProvider extends AbstractUserDetailsAuthenticationProvider {
         String username =  JwtUtils.getUsername(requestToken);
         String redisUserInfo = (String) redisTemplate.opsForValue().get(REDIS_PREFIX+username);
         userDetails = JSONObject.parseObject(redisUserInfo,com.springboot.wzh.model.UserDetails.class);
-        if (!requestToken.equals(userDetails.getToken())){
+        if (userDetails== null || !requestToken.equals(userDetails.getToken())){
             log.info("TOKEN不匹配");
             return null;
         }

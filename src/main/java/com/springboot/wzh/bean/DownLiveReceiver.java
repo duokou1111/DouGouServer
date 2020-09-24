@@ -5,9 +5,10 @@ import com.springboot.wzh.domain.RedisStreamSettings;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+
 @Component
-@RabbitListener(queues = "live")
-public class OnLiveReceiver {
+@RabbitListener(queues = "down")
+public class DownLiveReceiver {
 
     @RabbitHandler
     public void handler(String message){

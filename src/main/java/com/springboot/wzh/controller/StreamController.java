@@ -57,36 +57,18 @@ public class StreamController {
         redisStreamSettings.setUsername(JwtUtils.getUsername(request.getHeader("token")));
         redisStreamSettings.setTagId(streamSetting.getTagId());
         redisStreamSettings.setTitle(streamSetting.getTitle());
+        redisStreamSettings.setStatus("prepare");
         redisStreamSettings.setSecret(Common.generateStreamSecret(JwtUtils.getUsername(request.getHeader("token"))));
-        ActionResult finalActionResult = actionResult;
-        SessionCallback sessionCallback = new SessionCallback() {
-            @Override
-            public Object execute(RedisOperations redisOperations) throws DataAccessException {
-                redisOperations.multi();
-                //“setIfAbsent return  null when used in transaction”(这不坑爹吗，我想了一整天都没想明白boolean类型给我一个null)
-                redisOperations.opsForValue().setIfAbsent(REDIS_PREFIX+streamSetting.getRoomId(),JSONObject.toJSONString(redisStreamSettings),600L, TimeUnit.SECONDS);
-                try {
-                    List<Object> list = redisOperations.exec();
-                    if(list.get(0).toString().equals("true")){
-                        finalActionResult.setSuccess(true);
-                        Map<String,Object> hashMap = new HashMap<>();
-                        hashMap.put("settings",redisStreamSettings);
-                        finalActionResult.setData(hashMap);
-                    }else{
-                        finalActionResult.setSuccess(false);
-                        finalActionResult.setMessage("房号已经被人占用");
-                    }
-                    return finalActionResult;
-                }catch (Exception e){
-                    //被监视的Key有变动
-                    finalActionResult.setSuccess(false);
-                    finalActionResult.setMessage("房号已经被人占用");
-                    return finalActionResult;
-                }
-
-            }
-        };
-        actionResult = (ActionResult) redisTemplate.execute(sessionCallback);
+        boolean isSet = redisTemplate.opsForValue().setIfAbsent(REDIS_PREFIX+streamSetting.getRoomId(),JSONObject.toJSONString(redisStreamSettings),600L,TimeUnit.SECONDS);
+        if(isSet){
+            actionResult.setSuccess(true);
+            HashMap<String,Object> hashMap = new HashMap<>();
+            hashMap.put("settings",redisStreamSettings);
+            actionResult.setData(hashMap);
+        }else{
+            actionResult.setSuccess(false);
+            actionResult.setMessage("房间号已被抢走了~");
+        }
         return JSONObject.toJSONString(actionResult);
     }
     @PutMapping("/coverImg")

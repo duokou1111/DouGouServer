@@ -11,6 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -23,7 +24,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
 
     public JwtAuthenticationFilter() {
-        super(new AntPathRequestMatcher("/tag/**,/stream/**"));
+        super(new AntPathRequestMatcher("/tag/**"));
     }
 
     @Override

@@ -7,7 +7,15 @@ import java.io.Serializable;
 public class RedisStreamSettings extends StreamSettingsVO  implements Serializable {
     private String secret;
     private String username;
+    private String status;
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getUsername() {
         return username;

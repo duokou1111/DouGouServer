@@ -1,5 +1,7 @@
 package com.springboot.wzh.controller;
 
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConnectionFactory;
 import com.springboot.wzh.bean.IValidator;
 import com.springboot.wzh.bean.UserService;
 import com.springboot.wzh.bean.Validator;
@@ -10,6 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
 @Controller
 public class IndexController {
     @Autowired
@@ -19,13 +25,6 @@ public class IndexController {
     @Autowired
     UserService userService;
 
-
-    @RequestMapping("/index")
-    @ResponseBody
-    public void index(){
-        System.out.println(indexService.getUser("wuzihan").toString());
-        System.out.println(indexService.getConfig("login_limit"));
-    }
     @RequestMapping("/test")
     @ResponseBody
     public void test(){

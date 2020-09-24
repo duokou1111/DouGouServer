@@ -1,5 +1,6 @@
 package com.springboot.wzh.config;
 
+import com.springboot.wzh.bean.DownLiveReceiver;
 import com.springboot.wzh.bean.OnLiveReceiver;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,13 @@ import java.util.Set;
 
 @Configuration
 public class RedisConfig {
-    @Bean
+   /* @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
-                                            MessageListenerAdapter onLiveListener) {
+                                            MessageListenerAdapter onLiveListener,MessageListenerAdapter downLiveListener) {
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.addMessageListener(onLiveListener, new PatternTopic("CHANNEL_UP"));
+        container.addMessageListener(downLiveListener, new PatternTopic("CHANNEL_DOWN"));
         return container;
     }
 
@@ -40,6 +42,10 @@ public class RedisConfig {
     MessageListenerAdapter OnLiveListener(OnLiveReceiver onLiveReceiver) {
         return new MessageListenerAdapter(onLiveReceiver, "onLive");
     }
+    @Bean(name = "downLiveListener")
+    MessageListenerAdapter DownLiveListener(DownLiveReceiver downLiveReceiver){
+        return new MessageListenerAdapter(downLiveReceiver,"downLive");
+    }*/
     /*@Bean("redisSentinelConfiguration")
     public RedisSentinelConfiguration getRedisSentinelConfiguration(
             @Value("${redis.sentinel.nodes}") String nodes,
