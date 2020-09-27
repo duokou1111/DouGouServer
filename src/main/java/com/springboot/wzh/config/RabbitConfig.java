@@ -11,5 +11,5 @@ public class RabbitConfig {
         return new Queue("live",true); //队列名字，是否持久化
     }
     @Bean
-    public Queue directDownQueue(){return new Queue("down",true);}
+    public Queue directDownQueue(){return new Queue("disconnect",true);}
 }

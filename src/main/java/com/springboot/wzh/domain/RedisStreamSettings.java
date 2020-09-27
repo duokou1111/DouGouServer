@@ -8,7 +8,15 @@ public class RedisStreamSettings extends StreamSettingsVO  implements Serializab
     private String secret;
     private String username;
     private String status;
+    private Long disconnectDate;
 
+    public Long getDisconnectDate() {
+        return disconnectDate;
+    }
+
+    public void setDisconnectDate(Long disconnectDate) {
+        this.disconnectDate = disconnectDate;
+    }
     public String getStatus() {
         return status;
     }

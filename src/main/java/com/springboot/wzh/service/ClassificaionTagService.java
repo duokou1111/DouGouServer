@@ -14,4 +14,7 @@ public class ClassificaionTagService {
     public List<ClassificationTag> getAll(){
         return classificationTagDao.getAll();
     }
+    public String getTagNameById(int id){
+        return classificationTagDao.getTagNameById(id);
+    }
 }

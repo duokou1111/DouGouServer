@@ -5,7 +5,9 @@ import com.springboot.wzh.bean.MyFilePath;
 import com.springboot.wzh.domain.RedisStreamSettings;
 import com.springboot.wzh.model.ActionResult;
 import com.springboot.wzh.model.StreamCoverVO;
+import com.springboot.wzh.model.StreamInfoDTO;
 import com.springboot.wzh.model.StreamSettingsVO;
+import com.springboot.wzh.service.StreamService;
 import com.springboot.wzh.utils.Common;
 import com.springboot.wzh.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +17,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.*;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,9 +35,28 @@ public class StreamController {
     private static final String REDIS_PREFIX = "STREAM:";
     private static final String ON_LIVE_REDIS_PREFIX = "ONLIVE:";
     @Autowired
-    MyFilePath myFilePath;
+    private StreamService streamService;
     @Autowired
-    RedisTemplate redisTemplate;
+    private MyFilePath myFilePath;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @GetMapping("/{id}")
+    @ResponseBody
+    public ActionResult getStream(@PathVariable("id") String id){
+        ActionResult actionResult = new ActionResult();
+        if(StringUtils.isEmptyOrWhitespace(id)){
+            return actionResult;
+        }
+        StreamInfoDTO streamInfoDTO = streamService.getStreamInfo(id);
+        if (streamInfoDTO == null){
+            actionResult.setSuccess(false);
+            actionResult.setMessage("当前房间不存在");
+        }else{
+            actionResult.setSuccess(true);
+            actionResult.setData(Collections.singletonMap("stream",streamInfoDTO));
+        }
+        return actionResult;
+    }
     @PutMapping("/settings")
     @ResponseBody
     public String setStreamSettings(@Valid StreamSettingsVO streamSetting, BindingResult bindingResult,HttpServletRequest request) throws IOException {

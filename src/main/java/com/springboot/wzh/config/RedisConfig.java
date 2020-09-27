@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
@@ -28,6 +29,10 @@ import java.util.Set;
 
 @Configuration
 public class RedisConfig {
+    @Bean
+    public RedisCacheManager cacheManager(RedisConnectionFactory factory) {
+        return RedisCacheManager.create(factory);
+    }
    /* @Bean
     RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory,
                                             MessageListenerAdapter onLiveListener,MessageListenerAdapter downLiveListener) {
