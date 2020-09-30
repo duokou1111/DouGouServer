@@ -35,7 +35,7 @@ public class DownLiveReceiver {
         }
         redisTemplate.watch(REDIS_PREFIX+redisStreamSettings.getRoomId());
         RedisStreamSettings redis = JSONObject.parseObject((String)redisTemplate.opsForValue().get(REDIS_PREFIX+redisStreamSettings.getRoomId()),RedisStreamSettings.class);
-        if (redis == null || redis.getDisconnectDate().longValue() != redisStreamSettings.getDisconnectDate().longValue()){
+        if (redis == null || !"disconnect".equals(redis.getStatus()) || redis.getDisconnectDate().longValue() != redisStreamSettings.getDisconnectDate().longValue()){
             return;
         }
         boolean flag;

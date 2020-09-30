@@ -1,6 +1,7 @@
 package com.springboot.wzh.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.springboot.wzh.bean.ElasticSearchUtils;
 import com.springboot.wzh.bean.MyFilePath;
 import com.springboot.wzh.domain.RedisStreamSettings;
 import com.springboot.wzh.model.ActionResult;
@@ -40,6 +41,22 @@ public class StreamController {
     private MyFilePath myFilePath;
     @Autowired
     private RedisTemplate redisTemplate;
+    @Autowired
+    ElasticSearchUtils elasticSearchUtils;
+    @GetMapping("/search/{keyword}")
+    @ResponseBody
+    public ActionResult getStreamInfoByKeyWords(@PathVariable("keyword") String keyword) throws IOException {
+        ActionResult actionResult = new ActionResult();
+        if(StringUtils.isEmptyOrWhitespace(keyword)){
+            actionResult.setMessage("关键字不得为空");
+            actionResult.setSuccess(false);
+            return actionResult;
+        }
+        List<StreamInfoDTO> list = elasticSearchUtils.searchDocument(keyword);
+        actionResult.setSuccess(true);
+        actionResult.setData(Collections.singletonMap("list",list));
+        return actionResult;
+    }
     @GetMapping("/{id}")
     @ResponseBody
     public ActionResult getStream(@PathVariable("id") String id){

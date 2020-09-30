@@ -1,5 +1,6 @@
 package com.springboot.wzh.config;
 
+import com.springboot.wzh.bean.MySettings;
 import com.springboot.wzh.security.CustomizeUsernamePasswordAuthenticationFilter;
 import com.springboot.wzh.security.JwtAuthenticationFilter;
 import com.springboot.wzh.security.JwtProvider;
@@ -20,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.Collections;
 
@@ -34,6 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     @Lazy
     JwtProvider jwtProvider;
+    @Autowired
+    MySettings mySettings;
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         // http.csrf().disable()
@@ -47,6 +51,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.addAllowedOrigin("http://localhost");	//同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
         corsConfiguration.addAllowedOrigin("http://127.0.0.1");
+        if(!StringUtils.isEmptyOrWhitespace(mySettings.getCors())) {
+            System.out.println(mySettings.getCors()+"~");
+            corsConfiguration.addAllowedOrigin(mySettings.getCors());
+        }
         corsConfiguration.addAllowedHeader("*");//header，允许哪些header，本案中使用的是token，此处可将*替换为token；
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setAllowCredentials(true);
